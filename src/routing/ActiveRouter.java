@@ -35,8 +35,8 @@ public abstract class ActiveRouter extends MessageRouter {
 	/* The total number of message copies allowed to transmit throughout 
 	 * the network
 	 * Author: Akshay Kayastha, Khushveer Kaur, Dilip Yadav */
-	//public static final String ALLOWABLE_COPIES = "copies";
-	//private static int copies;
+	public static final String ALLOWABLE_COPIES = "copies";
+	private static int copies;
 	
 	/** prefix of all response message IDs */
 	public static final String RESPONSE_PREFIX = "R_";
@@ -63,10 +63,10 @@ public abstract class ActiveRouter extends MessageRouter {
 			this.deleteDelivered = false;
 		}
 		
-//		if (s.contains(ALLOWABLE_COPIES)) {
-//			copies = s.getInt(ALLOWABLE_COPIES);
-//			System.out.println(copies);
-//		}
+		if (s.contains(ALLOWABLE_COPIES)) {
+			copies = s.getInt(ALLOWABLE_COPIES);
+			System.out.println(copies);
+		}
 	}
 	
 	/**
