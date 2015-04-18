@@ -38,7 +38,7 @@ public class Message implements Comparable<Message> {
 	/*Total copies or right allowed to be transmitted
 	 * Author: Akshay Kayastha, Khushveer Kaur, Dilip Yadav	
 	*/
-//	private int copies;
+	private int copies;
 	
 	/** if a response to this message is required, this is the size of the 
 	 * response message (or 0 if no response is requested) */
@@ -82,7 +82,7 @@ public class Message implements Comparable<Message> {
 		this.requestMsg = null;
 		this.properties = null;
 		this.appID = null;
-//		this.copies = INFINITE_TTL;
+		this.copies = INFINITE_TTL;
 		Message.nextUniqueId++;
 		addNodeOnPath(from);
 	}
@@ -370,16 +370,16 @@ public class Message implements Comparable<Message> {
 	 * Returns the allowable copies of the message
 	 * @return the copies of the message it bears
 	 */
-/*	public int getCopies() {
+	public int getCopies() {
 		return this.copies;
 	}
 	
-	*//**
+	/**
 	 * @param copies the copies to set
-	 *//*
+	 */
 	public void setCopies(int copies) {
 		this.copies = copies;
 	}
-*/	
+	
 }
 
