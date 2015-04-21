@@ -65,7 +65,7 @@ public abstract class ActiveRouter extends MessageRouter {
 		
 		if (s.contains(ALLOWABLE_COPIES)) {
 			copies = s.getInt(ALLOWABLE_COPIES);
-			System.out.println(copies);
+			//System.out.println(copies);
 		}
 	}
 	

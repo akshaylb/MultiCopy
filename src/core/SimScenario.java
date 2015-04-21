@@ -12,8 +12,10 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import movement.MapBasedMovement;
 import movement.MovementModel;
@@ -338,7 +340,10 @@ public class SimScenario implements Serializable {
 	 */
 	protected void createHosts() {
 		this.hosts = new ArrayList<DTNHost>();
-
+		Map<String, MovementModel> communityHosts = new HashMap<String, MovementModel>();
+		List<NetworkInterface> ccNetInterfaces = null;
+		MessageRouter mRouterProto = null;
+		
 		for (int i=1; i<=nrofGroups; i++) {
 			List<NetworkInterface> mmNetInterfaces = 
 				new ArrayList<NetworkInterface>();
@@ -353,7 +358,7 @@ public class SimScenario implements Serializable {
 			MovementModel mmProto = 
 				(MovementModel)s.createIntializedObject(MM_PACKAGE + 
 						s.getSetting(MOVEMENT_MODEL_S));
-			MessageRouter mRouterProto = 
+			mRouterProto = 
 				(MessageRouter)s.createIntializedObject(ROUTING_PACKAGE + 
 						s.getSetting(ROUTER_S));
 				
@@ -406,6 +411,18 @@ public class SimScenario implements Serializable {
 				this.simMap = ((MapBasedMovement)mmProto).getMap();
 			}
 			
+			// creates hosts of ith group
+			for (int j=0; j<nrofHosts; j++) {
+				ModuleCommunicationBus comBus = new ModuleCommunicationBus();
+				
+				// prototypes are given to new DTNHost which replicates
+				// new instances of movement model and message router
+				DTNHost host = new DTNHost(this.messageListeners, 
+						this.movementListeners,	gid, mmNetInterfaces, comBus, 
+						mmProto, mRouterProto);
+				hosts.add(host);
+			}
+			
 			//code for Community Centers
 			//@author= Akshay Kayastha, Khushveer Kaur, Dilip Yadav
 			
@@ -413,7 +430,7 @@ public class SimScenario implements Serializable {
 			{
 				System.out.println(mmProto.toString());
 				List<Coord> allCC = null;
-				List<NetworkInterface> ccNetInterfaces = new ArrayList<NetworkInterface>();
+				ccNetInterfaces = new ArrayList<NetworkInterface>();
 				if(((WorkingDayMovement)mmProto).getAllOfficeLocations() != null) 
 				{
 					allCC = pickNRandom(((WorkingDayMovement)mmProto).getAllOfficeLocations(),10);
@@ -435,26 +452,18 @@ public class SimScenario implements Serializable {
 					{
 						String ccid = "CC" + gid + k;
 						MovementModel ccProto = new StationaryMovement(ccs,allCC.get(k));
-						ModuleCommunicationBus comBus = new ModuleCommunicationBus();
-						DTNHost host = new DTNHost(this.messageListeners, 
-								this.movementListeners,	ccid, ccNetInterfaces, comBus, 
-								ccProto, mRouterProto);
-						hosts.add(host);
+						communityHosts.put(ccid, ccProto);
 					}
 				}
 			}
-
-			// creates hosts of ith group
-			for (int j=0; j<nrofHosts; j++) {
-				ModuleCommunicationBus comBus = new ModuleCommunicationBus();
-				
-				// prototypes are given to new DTNHost which replicates
-				// new instances of movement model and message router
-				DTNHost host = new DTNHost(this.messageListeners, 
-						this.movementListeners,	gid, mmNetInterfaces, comBus, 
-						mmProto, mRouterProto);
-				hosts.add(host);
-			}
+		}
+		for (Map.Entry<String, MovementModel> entry : communityHosts.entrySet())
+		{
+			ModuleCommunicationBus comBus = new ModuleCommunicationBus();
+			DTNHost host = new DTNHost(this.messageListeners, 
+					this.movementListeners,	entry.getKey().substring(0,3), ccNetInterfaces, comBus, 
+					entry.getValue(), mRouterProto);
+			hosts.add(host);
 		}
 	}
 

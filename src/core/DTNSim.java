@@ -48,8 +48,6 @@ public class DTNSim {
 		int firstConfIndex = 0;
 		int guiIndex = 0;
 		
-		System.out.println("Hello");
-
 		/* set US locale to parse decimals in consistent way */
 		java.util.Locale.setDefault(java.util.Locale.US);
 		
