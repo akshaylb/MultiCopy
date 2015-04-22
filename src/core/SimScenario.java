@@ -340,10 +340,13 @@ public class SimScenario implements Serializable {
 	 */
 	protected void createHosts() {
 		this.hosts = new ArrayList<DTNHost>();
-		Map<String, MovementModel> communityHosts = new HashMap<String, MovementModel>();
-		List<NetworkInterface> ccNetInterfaces = null;
-		MessageRouter mRouterProto = null;
-		
+		Map<String, Tuple<MovementModel, MessageRouter>> communityHosts = new HashMap<String, Tuple<MovementModel, MessageRouter>>();
+		List<NetworkInterface> ccNetInterfaces = new ArrayList<NetworkInterface>();
+
+		Settings ccs = new Settings(CC_NS);
+		ccs.setSecondaryNamespace(CC_NS);
+		String cIntname = ccs.getSetting(INTERFACENAME_S);
+					
 		for (int i=1; i<=nrofGroups; i++) {
 			List<NetworkInterface> mmNetInterfaces = 
 				new ArrayList<NetworkInterface>();
@@ -358,7 +361,7 @@ public class SimScenario implements Serializable {
 			MovementModel mmProto = 
 				(MovementModel)s.createIntializedObject(MM_PACKAGE + 
 						s.getSetting(MOVEMENT_MODEL_S));
-			mRouterProto = 
+			MessageRouter mRouterProto = 
 				(MessageRouter)s.createIntializedObject(ROUTING_PACKAGE + 
 						s.getSetting(ROUTER_S));
 				
@@ -406,7 +409,7 @@ public class SimScenario implements Serializable {
 					System.exit(-1);
 				}
 			}
-
+			
 			if (mmProto instanceof MapBasedMovement) {
 				this.simMap = ((MapBasedMovement)mmProto).getMap();
 			}
@@ -438,35 +441,35 @@ public class SimScenario implements Serializable {
 					{
 						allCC.add(((WorkingDayMovement)mmProto).getOfficeLocation());
 					}
-					//System.out.println(((WorkingDayMovement)mmProto).getAllShoppingLocations().size());
 					allCC.addAll(((WorkingDayMovement)mmProto).getAllShoppingLocations());
-					//System.out.println(allCC.toString());
-					Settings ccs = new Settings(CC_NS+i);
-					ccs.setSecondaryNamespace(CC_NS);
-					String Intname = ccs.getSetting(INTERFACENAME_S);
-					Settings t = new Settings(Intname); 
-					NetworkInterface ccInterface = (NetworkInterface)t.createIntializedObject(INTTYPE_PACKAGE + t.getSetting(INTTYPE_S));
-					ccInterface.setClisteners(connectionListeners);
-					ccNetInterfaces.add(ccInterface);					
+					
 					for(int k=0; k<allCC.size();k++)
 					{
 						String ccid = "CC" + gid + k;
 						MovementModel ccProto = new StationaryMovement(ccs,allCC.get(k));
-						communityHosts.put(ccid, ccProto);
+						communityHosts.put(ccid, new Tuple<MovementModel, MessageRouter>(ccProto, mRouterProto));
 					}
 				}
 			}
 		}
-		for (Map.Entry<String, MovementModel> entry : communityHosts.entrySet())
+	
+		Settings ct = new Settings(cIntname); 
+		NetworkInterface cInterface = (NetworkInterface)ct.createIntializedObject(INTTYPE_PACKAGE + ct.getSetting(INTTYPE_S));
+		cInterface.setClisteners(connectionListeners);
+		ccNetInterfaces.add(cInterface);	
+		System.out.println(ccNetInterfaces.size());
+		
+		for (Map.Entry<String, Tuple<MovementModel, MessageRouter>> entry : communityHosts.entrySet())
 		{
 			ModuleCommunicationBus comBus = new ModuleCommunicationBus();
 			DTNHost host = new DTNHost(this.messageListeners, 
 					this.movementListeners,	entry.getKey().substring(0,3), ccNetInterfaces, comBus, 
-					entry.getValue(), mRouterProto);
+					entry.getValue().getKey(),entry.getValue().getValue());
 			hosts.add(host);
 		}
 	}
 
+	
 	/*
 	 * Randomly Select N coordinates from a list
 	 * Author: Akshay Kayastha, Khushveer Kaur, Dilip Yadav

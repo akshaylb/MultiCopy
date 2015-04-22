@@ -10,7 +10,6 @@ import java.util.List;
 
 import movement.MovementModel;
 import movement.Path;
-import movement.WorkingDayMovement;
 import routing.MessageRouter;
 import routing.RoutingInfo;
 
