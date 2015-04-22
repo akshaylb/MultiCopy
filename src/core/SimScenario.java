@@ -431,7 +431,7 @@ public class SimScenario implements Serializable {
 			
 			if(mmProto instanceof WorkingDayMovement)
 			{
-				System.out.println(mmProto.toString());
+//				System.out.println(mmProto.toString());
 				List<Coord> allCC = null;
 				ccNetInterfaces = new ArrayList<NetworkInterface>();
 				if(((WorkingDayMovement)mmProto).getAllOfficeLocations() != null) 
@@ -457,7 +457,7 @@ public class SimScenario implements Serializable {
 		NetworkInterface cInterface = (NetworkInterface)ct.createIntializedObject(INTTYPE_PACKAGE + ct.getSetting(INTTYPE_S));
 		cInterface.setClisteners(connectionListeners);
 		ccNetInterfaces.add(cInterface);	
-		System.out.println(ccNetInterfaces.size());
+//		System.out.println(ccNetInterfaces.size());
 		
 		for (Map.Entry<String, Tuple<MovementModel, MessageRouter>> entry : communityHosts.entrySet())
 		{

@@ -105,6 +105,7 @@ public abstract class ActiveRouter extends MessageRouter {
 			new ArrayList<Message>(this.getMessageCollection());
 		for (Message m : temp) {
 			if (other == m.getTo()) {
+//				System.out.println(getHost().toString()+ " sends " + m.toString() + " to " + other.toString());
 				if (startTransfer(m, con) == RCV_OK) {
 					return true;
 				}

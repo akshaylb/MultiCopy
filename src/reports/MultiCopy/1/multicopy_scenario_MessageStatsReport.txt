@@ -1,18 +1,18 @@
 Message stats for scenario multicopy_scenario
 sim_time: 86000.0000
 created: 500
-started: 196776
-relayed: 196746
+started: 196653
+relayed: 196624
 aborted: 7
 dropped: 0
 removed: 0
-delivered: 213
-delivery_prob: 0.4260
+delivered: 217
+delivery_prob: 0.4340
 response_prob: 0.0000
-overhead_ratio: 922.6901
-latency_avg: 31640.6695
+overhead_ratio: 905.1014
+latency_avg: 31661.1991
 latency_med: 26902.8000
-hopcount_avg: 6.2723
+hopcount_avg: 6.2903
 hopcount_med: 6
 buffertime_avg: NaN
 buffertime_med: NaN
