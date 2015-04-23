@@ -33,7 +33,10 @@ public class DTNHost implements Comparable<DTNHost> {
 	private List<MovementListener> movListeners;
 	private List<NetworkInterface> net;
 	private ModuleCommunicationBus comBus;
-
+	
+	private int ncap;
+	private int ccap;
+	
 	static {
 		DTNSim.registerForReset(DTNHost.class.getCanonicalName());
 		reset();
@@ -58,7 +61,6 @@ public class DTNHost implements Comparable<DTNHost> {
 		this.address = getNextAddress();
 		this.name = groupId+address;
 		this.net = new ArrayList<NetworkInterface>();
-
 		for (NetworkInterface i : interf) {
 			NetworkInterface ni = i.replicate();
 			ni.setHost(this);
@@ -86,6 +88,9 @@ public class DTNHost implements Comparable<DTNHost> {
 				l.initialLocation(this, this.location);
 			}
 		}
+		
+		this.setCcap(0);
+		this.setNcap(0);
 	}
 	
 	/**
@@ -499,6 +504,30 @@ public class DTNHost implements Comparable<DTNHost> {
 	 */
 	public int compareTo(DTNHost h) {
 		return this.getAddress() - h.getAddress();
+	}
+
+	public int getNcap() {
+		return ncap;
+	}
+
+	public void setNcap(int ncap) {
+		this.ncap = ncap;
+	}
+
+	public int getCcap() {
+		return ccap;
+	}
+
+	public void setCcap(int ccap) {
+		this.ccap = ccap;
+	}
+	
+	public void addCcap(int newccap) {
+		this.ccap = this.ccap + newccap;
+	}
+	
+	public void reduceCcap(int newccap) {
+		this.ccap = this.ccap - newccap;
 	}
 
 }

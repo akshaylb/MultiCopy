@@ -21,6 +21,12 @@ public abstract class Connection {
 	/** how many bytes this connection has transferred */
 	protected int bytesTransferred;
 
+	/*
+	to check if a message has been transferred in this instance of the connection
+	Author: Akshay Kayastha, Khushveer Kaur, Dilip Yadav
+	*/
+	private boolean done;
+	
 	/**
 	 * Creates a new connection between nodes and sets the connection
 	 * state to "up".
@@ -37,6 +43,7 @@ public abstract class Connection {
 		this.toInterface = toInterface;
 		this.isUp = true;
 		this.bytesTransferred = 0;
+		this.setDone(false);
 	}
 
 
@@ -215,6 +222,16 @@ public abstract class Connection {
 		(isUp() ? "up":"down") + 
 		(this.msgOnFly != null ? " transferring " + this.msgOnFly  + 
 				" from " + this.msgFromNode : "");
+	}
+
+
+	public boolean isDone() {
+		return done;
+	}
+
+
+	public void setDone(boolean done) {
+		this.done = done;
 	}
 
 }

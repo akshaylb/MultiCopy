@@ -50,7 +50,7 @@ public class CBRConnection extends Connection {
 
 		this.msgFromNode = from;
 //		System.out.println("Message "+m.toString()+" from "+from.toString()+" to ");
-//		Message newMessage = m.replicate();
+//		Message newMessage = m.replicate(); //Removed extra replication
 		int retVal = getOtherNode(from).receiveMessage(m, from);
 
 		if (retVal == MessageRouter.RCV_OK) {

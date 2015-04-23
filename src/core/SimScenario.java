@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import movement.MapBasedMovement;
 import movement.MovementModel;
@@ -97,6 +98,10 @@ public class SimScenario implements Serializable {
 	
 	/** package where to look for application classes */
 	private static final String APP_PACKAGE = "applications.";
+	
+	/** range value of ncap */
+	private static final String NCAP_RANGE = "ncaprange";
+	
 	
 	/** The world instance */
 	private World world;
@@ -356,7 +361,9 @@ public class SimScenario implements Serializable {
 			int nrofHosts = s.getInt(NROF_HOSTS_S);
 			int nrofInterfaces = s.getInt(NROF_INTERF_S);
 			int appCount;
-
+			int ncaprange[]=s.getCsvInts(NCAP_RANGE);
+			Random rand = new Random();
+			
 			// creates prototypes of MessageRouter and MovementModel
 			MovementModel mmProto = 
 				(MovementModel)s.createIntializedObject(MM_PACKAGE + 
@@ -423,6 +430,9 @@ public class SimScenario implements Serializable {
 				DTNHost host = new DTNHost(this.messageListeners, 
 						this.movementListeners,	gid, mmNetInterfaces, comBus, 
 						mmProto, mRouterProto);
+				int ncap = rand.nextInt(ncaprange[1]-ncaprange[0])+ncaprange[0];
+				host.setNcap(ncap);
+//				System.out.println(host.getNcap());
 				hosts.add(host);
 			}
 			
@@ -464,6 +474,7 @@ public class SimScenario implements Serializable {
 			DTNHost host = new DTNHost(this.messageListeners, 
 					this.movementListeners,	entry.getKey().substring(0,3), ccNetInterfaces, comBus, 
 					entry.getValue().getKey(),entry.getValue().getValue());
+			host.setNcap(100000);
 			hosts.add(host);
 		}
 	}

@@ -47,6 +47,7 @@ public class MessageCreateEvent extends MessageEvent {
 		if(from.getRouter() instanceof MulticopyRouter) {
 			copies = ((MulticopyRouter)from.getRouter()).getCopies();
 			m.setCopies(copies);
+			from.setCcap(copies);
 			System.out.println(from+" sends "+m+" to "+to+" with "+copies+" copies");
 		}
 		from.createNewMessage(m);
