@@ -49,11 +49,12 @@ public class CBRConnection extends Connection {
 		"start transfer of " + m + " from " + from;
 
 		this.msgFromNode = from;
-		Message newMessage = m.replicate();
-		int retVal = getOtherNode(from).receiveMessage(newMessage, from);
+//		System.out.println("Message "+m.toString()+" from "+from.toString()+" to ");
+//		Message newMessage = m.replicate();
+		int retVal = getOtherNode(from).receiveMessage(m, from);
 
 		if (retVal == MessageRouter.RCV_OK) {
-			this.msgOnFly = newMessage;
+			this.msgOnFly = m;
 			this.transferDoneTime = SimClock.getTime() + 
 			(1.0*m.getSize()) / this.speed;
 		}

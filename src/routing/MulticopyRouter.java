@@ -7,18 +7,16 @@ package routing;
 import core.Connection;
 import core.DTNHost;
 import core.Message;
+import core.MessageListener;
 import core.Settings;
 import core.SimError;
 
 /**
- * Epidemic message router with drop-oldest buffer and only single transferring
- * connections at a time.
+ * Multicopy message router 
+ * Author: Akshay Kayastha, Khushveer Kaur, Dilip Yadav
  */
 public class MulticopyRouter extends ActiveRouter {
 	
-	/* The total number of message copies allowed to transmit throughout 
-	 * the network
-	 * Author: Akshay Kayastha, Khushveer Kaur, Dilip Yadav */
 	public static final String ALLOWABLE_COPIES = "copies";
 	private int copies;
 	
@@ -70,9 +68,33 @@ public class MulticopyRouter extends ActiveRouter {
 	@Override
 	public int receiveMessage(Message m, DTNHost from) {
 		// TODO Auto-generated method stub
-		return super.receiveMessage(m, from);
+		if(m.getCopies()<2) return DENIED_OLD;
+		Message newMessage = distribute(m, from);
+		return super.receiveMessage(newMessage, from);
 	}
 
+	private Message distribute(Message m, DTNHost from) {
+		Message newMessage = m.replicate();
+		System.out.println(newMessage.toString()+"[" + newMessage.getCopies() + "],[" + existingCopies(getHost(),m)+"]");
+		int total_copies= m.getCopies() + existingCopies(getHost(),m);
+		int newcopies = total_copies/2;
+		int oldcopies = total_copies - newcopies;
+		newMessage.setCopies(newcopies);
+		m.setCopies(oldcopies);
+		System.out.println(newMessage.toString()+" recieved by "
+				+getHost().toString()+" from "+from.toString()+" with "
+				+newMessage.getCopies()+" copies, still have "+m.getCopies()+" copies");
+		return newMessage;
+	}
+	
+	private int existingCopies(DTNHost host, Message m) {
+		for (Message e : host.getMessageCollection()) {
+			if(e.getId() == m.getId())
+				return e.getCopies();
+		}
+		return 0;
+	}
+	
 	@Override
 	public MulticopyRouter replicate() {
 		return new MulticopyRouter(this);

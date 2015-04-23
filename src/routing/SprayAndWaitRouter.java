@@ -52,7 +52,8 @@ public class SprayAndWaitRouter extends ActiveRouter {
 	
 	@Override
 	public int receiveMessage(Message m, DTNHost from) {
-		return super.receiveMessage(m, from);
+		Message newMessage = m.replicate();
+		return super.receiveMessage(newMessage, from);
 	}
 	
 	@Override
