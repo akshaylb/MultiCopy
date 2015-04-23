@@ -262,7 +262,7 @@ public abstract class MessageRouter {
 		Message m2;
 		if (m == null) throw new SimError("no message for id " +
 				id + " to send at " + this.host);
- 
+		
 		m2 = m.replicate();	// send a replicate of the message
 		to.receiveMessage(m2, this.host);
 	}
@@ -290,7 +290,7 @@ public abstract class MessageRouter {
 				
 		this.putToIncomingBuffer(newMessage, from);		
 		newMessage.addNodeOnPath(this.host);
-		
+//		System.out.println(newMessage.toString()+" recieved by "+this.host.toString()+" from "+from.toString());
 		for (MessageListener ml : this.mListeners) {
 			ml.messageTransferStarted(newMessage, from, getHost());
 		}
@@ -621,4 +621,5 @@ public abstract class MessageRouter {
 			this.getHost().toString() + " with " + getNrofMessages() 
 			+ " messages";
 	}
+
 }

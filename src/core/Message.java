@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import routing.MulticopyRouter;
+
 /**
  * A message that is created at a node or passed between nodes.
  */
@@ -82,6 +84,7 @@ public class Message implements Comparable<Message> {
 		this.requestMsg = null;
 		this.properties = null;
 		this.appID = null;
+		
 		this.copies = INFINITE_TTL;
 		Message.nextUniqueId++;
 		addNodeOnPath(from);
@@ -267,6 +270,7 @@ public class Message implements Comparable<Message> {
 		this.requestMsg  = m.requestMsg;
 		this.initTtl = m.initTtl;
 		this.appID = m.appID;
+		this.copies = m.copies;
 		
 		if (m.properties != null) {
 			Set<String> keys = m.properties.keySet();

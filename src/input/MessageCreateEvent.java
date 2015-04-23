@@ -4,6 +4,7 @@
  */
 package input;
 
+import routing.MulticopyRouter;
 import core.DTNHost;
 import core.Message;
 import core.World;
@@ -41,8 +42,13 @@ public class MessageCreateEvent extends MessageEvent {
 		DTNHost to = world.getNodeByAddress(this.toAddr);
 		DTNHost from = world.getNodeByAddress(this.fromAddr);			
 		Message m = new Message(from, to, this.id, this.size);
-		//System.out.println(from+" sends "+m+" to "+to);
 		m.setResponseSize(this.responseSize);
+		int copies;
+		if(from.getRouter() instanceof MulticopyRouter) {
+			copies = ((MulticopyRouter)from.getRouter()).getCopies();
+			m.setCopies(copies);
+//			System.out.println(from+" sends "+m+" to "+to+" with "+copies+" copies");
+		}
 		from.createNewMessage(m);
 	}
 	

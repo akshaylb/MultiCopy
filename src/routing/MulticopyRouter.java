@@ -5,14 +5,22 @@
 package routing;
 
 import core.Connection;
+import core.DTNHost;
 import core.Message;
 import core.Settings;
+import core.SimError;
 
 /**
  * Epidemic message router with drop-oldest buffer and only single transferring
  * connections at a time.
  */
 public class MulticopyRouter extends ActiveRouter {
+	
+	/* The total number of message copies allowed to transmit throughout 
+	 * the network
+	 * Author: Akshay Kayastha, Khushveer Kaur, Dilip Yadav */
+	public static final String ALLOWABLE_COPIES = "copies";
+	private int copies;
 	
 	/**
 	 * Constructor. Creates a new message router based on the settings in
@@ -21,7 +29,10 @@ public class MulticopyRouter extends ActiveRouter {
 	 */
 	public MulticopyRouter(Settings s) {
 		super(s);
-		//TODO: read&use epidemic router specific settings (if any)
+		if (s.contains(ALLOWABLE_COPIES)) {
+			this.copies = s.getInt(ALLOWABLE_COPIES);
+//			System.out.println(this.copies);
+		}
 	}
 	
 	/**
@@ -30,7 +41,7 @@ public class MulticopyRouter extends ActiveRouter {
 	 */
 	protected MulticopyRouter(MulticopyRouter r) {
 		super(r);
-		//TODO: copy epidemic settings here (if any)
+		this.copies = r.copies;
 	}
 			
 	@Override
@@ -45,24 +56,21 @@ public class MulticopyRouter extends ActiveRouter {
 			return; // started a transfer, don't try others (yet)
 		}
 //		System.out.println(getHost().getNrofMessages());
-		System.out.println(getHost().toString());
-		for(Message m : this.getMessageCollection())
-		{
-			System.out.println(m.toString()+" == "+m.getFrom()+"-->"+m.getTo());
-		}
-		System.out.println("_______________________________________________");
+//		System.out.println(getHost().toString());
+//		for(Message m : this.getMessageCollection())
+//		{
+//			System.out.println(m.toString()+" == "+m.getFrom()+"-->"+m.getTo());
+//		}
+//		System.out.println("_______________________________________________");
 		// then try any/all message to any/all connection
 		this.tryAllMessagesToAllConnections();
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see routing.ActiveRouter#tryAllMessagesToAllConnections()
-	 */
+
 	@Override
-	protected Connection tryAllMessagesToAllConnections() {
+	public int receiveMessage(Message m, DTNHost from) {
 		// TODO Auto-generated method stub
-		return super.tryAllMessagesToAllConnections();
+		return super.receiveMessage(m, from);
 	}
 
 	@Override
@@ -70,4 +78,11 @@ public class MulticopyRouter extends ActiveRouter {
 		return new MulticopyRouter(this);
 	}
 
+	public int getCopies() {
+		return this.copies;
+	}
+	
+	void setCopies(int copies) {
+		this.copies = copies;
+	}
 }

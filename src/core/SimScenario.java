@@ -457,7 +457,6 @@ public class SimScenario implements Serializable {
 		NetworkInterface cInterface = (NetworkInterface)ct.createIntializedObject(INTTYPE_PACKAGE + ct.getSetting(INTTYPE_S));
 		cInterface.setClisteners(connectionListeners);
 		ccNetInterfaces.add(cInterface);	
-//		System.out.println(ccNetInterfaces.size());
 		
 		for (Map.Entry<String, Tuple<MovementModel, MessageRouter>> entry : communityHosts.entrySet())
 		{
