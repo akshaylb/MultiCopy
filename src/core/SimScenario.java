@@ -351,6 +351,8 @@ public class SimScenario implements Serializable {
 		Settings ccs = new Settings(CC_NS);
 		ccs.setSecondaryNamespace(CC_NS);
 		String cIntname = ccs.getSetting(INTERFACENAME_S);
+		Double transmitRange = ccs.getDouble(NetworkInterface.TRANSMIT_RANGE_S);
+		int transmitSpeed = ccs.getInt(NetworkInterface.TRANSMIT_SPEED_S);
 					
 		for (int i=1; i<=nrofGroups; i++) {
 			List<NetworkInterface> mmNetInterfaces = 
@@ -466,6 +468,8 @@ public class SimScenario implements Serializable {
 		Settings ct = new Settings(cIntname); 
 		NetworkInterface cInterface = (NetworkInterface)ct.createIntializedObject(INTTYPE_PACKAGE + ct.getSetting(INTTYPE_S));
 		cInterface.setClisteners(connectionListeners);
+		cInterface.setTransmitRange(transmitRange);
+		cInterface.setTransmitSpeed(transmitSpeed);
 		ccNetInterfaces.add(cInterface);	
 		
 		for (Map.Entry<String, Tuple<MovementModel, MessageRouter>> entry : communityHosts.entrySet())

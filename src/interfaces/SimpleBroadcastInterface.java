@@ -71,7 +71,9 @@ public class SimpleBroadcastInterface extends NetworkInterface {
 		for (int i=0; i<this.connections.size(); ) {
 			Connection con = this.connections.get(i);
 			NetworkInterface anotherInterface = con.getOtherInterface(this);
-
+			if(anotherInterface.getInterfaceType()=="ccInterface")
+				System.out.println("Kewl");
+			
 			// all connections should be up at this stage
 			assert con.isUp() : "Connection " + con + " was down!";
 

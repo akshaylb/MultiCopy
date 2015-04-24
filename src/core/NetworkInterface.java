@@ -168,6 +168,13 @@ abstract public class NetworkInterface implements ModuleCommunicationListener {
 	public double getTransmitRange() {
 		return this.transmitRange;
 	}
+	
+	/**
+	 * Sets the transmit range of this network layer
+	 */
+	public void setTransmitRange(double transmitRange) {
+		this.transmitRange = transmitRange;
+	}
 
 	/**
 	 * Returns the transmit speed of this network layer
@@ -175,6 +182,13 @@ abstract public class NetworkInterface implements ModuleCommunicationListener {
 	 */
 	public int getTransmitSpeed() {
 		return this.transmitSpeed;
+	}
+	
+	/**
+	 * Sets the transmit range of this network layer
+	 */
+	public void setTransmitSpeed(int transmitSpeed) {
+		this.transmitSpeed = transmitSpeed;
 	}
 
 	/**

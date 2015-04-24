@@ -91,6 +91,8 @@ public class DTNHost implements Comparable<DTNHost> {
 		
 		this.setCcap(0);
 		this.setNcap(0);
+		
+//		System.out.println(this.name + this.net.get(0).getInterfaceType());
 	}
 	
 	/**
@@ -329,6 +331,7 @@ public class DTNHost implements Comparable<DTNHost> {
 		
 		if (simulateConnections) {
 			for (NetworkInterface i : net) {
+//				System.out.println(i);
 				i.update();
 			}
 		}

@@ -83,6 +83,8 @@ public class MulticopyRouter extends ActiveRouter {
 		Message newMessage = distribute(m, from);
 		con.setDone(true);
 		
+		if(newMessage.getTo().equals(getHost()))
+			System.out.println("Message "+ newMessage + " delivered by "+from.toString());
 		return super.receiveMessage(newMessage, from);
 	}
 
@@ -104,39 +106,51 @@ public class MulticopyRouter extends ActiveRouter {
 		super.changedConnection(con);
 	}
 
-	private Message distribute(Message m, DTNHost from) {
-				
-		if(isCommunityCenter(from)) {
-			System.out.print(from.toString()+"** ");
-			return doHoming(getHost(), from, m);			
-		}
-		else if(isCommunityCenter(getHost())){
-			System.out.print(getHost().toString()+"** ");
-			return doHoming(from, getHost(), m);
-		}
+	private Message distribute(Message m, DTNHost from) {		
+		if(isCommunityCenter(from)||isCommunityCenter(getHost()))
+			return doHoming(from, m);			
 		else
 			return doRoaming(from, m);
 	}
 	
-	private Message doHoming(DTNHost from, DTNHost center, Message m) {
+	private Message doHoming(DTNHost from, Message m) {
 		// TODO Auto-generated method stub
 		Message newMessage = m.replicate();
-		System.out.print(newMessage.toString()+"[" + existingCopies(center,m) + "],[" + newMessage.getCopies()+"] ["
-				+center.getCcap()+"]["+from.getCcap()+"]");
+		System.out.print(newMessage.toString()+"[" + existingCopies(getHost(),m) + "],[" + newMessage.getCopies()+"] ["
+				+getHost().getCcap()+"]["+from.getCcap()+"]");
 		
-		//Host dumps all its copies
+		//calculate total number of message copies present in the connection, and divide the ratio
+		int total_copies= newMessage.getCopies() + existingCopies(getHost(),m);
+		int newcopies = total_copies-1;
+		int oldcopies = 1;
+		
+		//Modify ccap value for receiver and sender
+		//reduce number of copies
 		from.reduceCcap(m.getCopies());
-		center.addCcap(m.getCopies());
+		getHost().reduceCcap(existingCopies(getHost(),m));
 		
-		//recreate the messages
-		newMessage.setCopies(m.getCopies()-1);
-		setCopies(center,newMessage,m.getCopies()-1);
-		m.setCopies(1);
-		setCopies(from,m,1);
+		//set divided copies in messages
+		if(isCommunityCenter(getHost())) {
+			newMessage.setCopies(newcopies);
+			setCopies(getHost(),newMessage,newcopies);
+			m.setCopies(oldcopies);
+			setCopies(from,m,oldcopies);	
+			
+			//add new ccap value to nodes
+			from.addCcap(oldcopies);
+			getHost().addCcap(newcopies);
+		}
+		else {
+			newMessage.setCopies(oldcopies);
+			setCopies(getHost(),newMessage,oldcopies);
+			m.setCopies(newcopies);
+			setCopies(from,m,newcopies);
+			
+			//add new ccap value to nodes
+			from.addCcap(newcopies);
+			getHost().addCcap(oldcopies);
+		}
 		
-		//Center gives host 1 message
-		from.addCcap(1);
-		center.reduceCcap(1);
 		
 		System.out.println(" recieved by "
 				+getHost().toString()+"["+getHost().getCcap()+"] from "
