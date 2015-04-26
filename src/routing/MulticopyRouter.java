@@ -55,14 +55,6 @@ public class MulticopyRouter extends ActiveRouter {
 		if (exchangeDeliverableMessages() != null) {
 			return; // started a transfer, don't try others (yet)
 		}
-//		System.out.println(getHost().getNrofMessages());
-//		System.out.println(getHost().toString());
-//		for(Message m : this.getMessageCollection())
-//		{
-//			System.out.println(m.toString()+" == "+m.getFrom()+"-->"+m.getTo());
-//		}
-//		System.out.println("_______________________________________________");
-		// then try any/all message to any/all connection
 		this.tryAllMessagesToAllConnections();
 	}
 	

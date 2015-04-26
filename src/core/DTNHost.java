@@ -331,7 +331,6 @@ public class DTNHost implements Comparable<DTNHost> {
 		
 		if (simulateConnections) {
 			for (NetworkInterface i : net) {
-//				System.out.println(i);
 				i.update();
 			}
 		}
