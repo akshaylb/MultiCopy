@@ -123,17 +123,19 @@ public class PingApplication extends Application {
 		if (type==null) return msg; // Not a ping/pong message
 		
 		// Respond with pong if we're the recipient
-		if (msg.getTo()==host && type.equalsIgnoreCase("ping")) {
-			String id = "pong" + SimClock.getIntTime() + "-" + 
-				host.getAddress();
-			Message m = new Message(host, msg.getFrom(), id, getPongSize());
-			m.addProperty("type", "pong");
-			m.setAppID(APP_ID);
-			host.createNewMessage(m);
-			
-			// Send event to listeners
-			super.sendEventToListeners("GotPing", null, host);
-			super.sendEventToListeners("SentPong", null, host);
+		for(DTNHost h : msg.getTo()) {	
+			if (h==host && type.equalsIgnoreCase("ping")) {
+				String id = "pong" + SimClock.getIntTime() + "-" + 
+					host.getAddress();
+				Message m = new Message(host, msg.getFrom(), id, getPongSize());
+				m.addProperty("type", "pong");
+				m.setAppID(APP_ID);
+				host.createNewMessage(m);
+				
+				// Send event to listeners
+				super.sendEventToListeners("GotPing", null, host);
+				super.sendEventToListeners("SentPong", null, host);
+			}
 		}
 		
 		// Received a pong reply

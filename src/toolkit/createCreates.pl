@@ -18,14 +18,15 @@ my $hostPrefix = "";
 # index of first message
 my $msgIndex = 1;
 
-my ($randSeed,  $nrofMessages, $times, $hosts, $sizes, $rsizes, $help);
+my ($randSeed,  $nrofMessages, $times, $hosts, $sizes, $rsizes, $help, $mcast);
     
 GetOptions("seed=i" => \$randSeed, "time=s" => \$times, 
 	   "nrof=i" => \$nrofMessages, 
 	   "hosts=s" => \$hosts, 
 	   "sizes=s" => \$sizes,
 	   "rsizes=s" => \$rsizes,
-	   "help|?!" => \$help);
+	   "help|?!" => \$help,
+	   "multicast=s" => \$mcast);
     
 unless (defined($help)) {
     unless (defined($times) and defined($nrofMessages)
@@ -50,6 +51,12 @@ my ($minHost, $maxHost) = $hosts =~ m/(\d+):(\d+)/;
 my ($start, $end) = $times =~ m/(\d+):(\d+)/;
 my ($minSize, $maxSize) = $sizes =~ m/(\d+):(\d+)/;
 
+my ($minTo, $maxTo);
+
+if (defined($mcast)) {
+    ($minTo, $maxTo) = $mcast =~ m/(\d+):(\d+)/;
+}
+
 my ($rMinSize, $rMaxSize);
 
 if (defined($rsizes)) {
@@ -68,14 +75,28 @@ for (my $time = $start; $time < $end; $time += $step) {
     
     if (rand() < $prob) {
 	my $from = int(rand() * ($maxHost-$minHost) + $minHost);
-	my $to = $from;
-	while ($to == $from) { # make sure $to and $from are not the same
-	  $to = int(rand() * ($maxHost-$minHost) + $minHost);
+	
+	my $noOfTo = 1;
+	if (defined($mcast)) {
+		$noOfTo = int(rand() * ($maxTo-$minTo) + $minTo);
 	}
 	my $size = int(rand() * ($maxSize-$minSize) + $minSize);
 	
 	printf "%.${prec}f",$time;
-	print "\tC\t$msgPrefix$msgIndex\t$hostPrefix$from\t$hostPrefix$to";
+	print "\tC";
+	if ($noOfTo > 1) {
+	    print "M";
+	}
+	print "\t$msgPrefix$msgIndex\t$hostPrefix$from";
+	while ($noOfTo > 0) {
+	    my $to = $from;
+	    while ($to == $from) { # make sure $to and $from are not the same
+	      $to = int(rand() * ($maxHost-$minHost) + $minHost);
+	    }
+	    print "\t$hostPrefix$to";
+	    $noOfTo = $noOfTo - 1;
+	}
+	
 	print "\t$size";
 
 	if (defined($rMinSize) and defined($rMaxSize)) {

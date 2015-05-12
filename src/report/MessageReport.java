@@ -36,14 +36,16 @@ public class MessageReport extends Report implements MessageListener {
 	public void messageTransferred(Message m, DTNHost from, DTNHost to, 
 			boolean firstDelivery) {
 		if (firstDelivery) {
-			write(m.getId() + " " 
+			write(m.getId() + " " + m.getFrom() + " " + to + " "
 					+ format(m.getCreationTime()) + " "  
 					+ format(getSimTime()));
 		} else {
-			if (to.getAddress() == m.getTo().getAddress()) {
-				write(m.getId() + " " 
-						+ format(m.getCreationTime()) + " "  
-						+ format(getSimTime()) + " duplicate");
+			for(DTNHost h : m.getTo()) {
+				if (to.getAddress() == h.getAddress()) {
+					write(m.getId() + " " + m.getFrom() + " " + to + " " 
+							+ format(m.getCreationTime()) + " "  
+							+ format(getSimTime()) + " duplicate");
+				}
 			}
 		}
 	}

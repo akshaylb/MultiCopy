@@ -4,6 +4,8 @@
  */
 package input;
 
+import java.util.List;
+
 import routing.MulticopyRouter;
 import core.DTNHost;
 import core.Message;
@@ -33,22 +35,37 @@ public class MessageCreateEvent extends MessageEvent {
 		this.responseSize = responseSize;
 	}
 
-	
+	public MessageCreateEvent(int from, List<Integer> mto, String id, int size,
+			int responseSize, double time) {
+		super(from, mto, id, time);
+		this.size = size;
+		this.responseSize = responseSize;
+	}
 	/**
 	 * Creates the message this event represents. 
 	 */
 	@Override
 	public void processEvent(World world) {
-		DTNHost to = world.getNodeByAddress(this.toAddr);
-		DTNHost from = world.getNodeByAddress(this.fromAddr);			
-		Message m = new Message(from, to, this.id, this.size);
+		Message m;
+		DTNHost to = null,from;
+		List<DTNHost> mto = null;
+		if (this.mtoAddr == null) {
+			to = world.getNodeByAddress(this.toAddr);
+			from = world.getNodeByAddress(this.fromAddr);			
+			m = new Message(from, to, this.id, this.size);
+		}
+		else {
+			mto = world.getNodeByAddress(this.mtoAddr);
+			from = world.getNodeByAddress(this.fromAddr);			
+			m = new Message(from, mto, this.id, this.size);
+		}
 		m.setResponseSize(this.responseSize);
 		int copies;
 		if(from.getRouter() instanceof MulticopyRouter) {
 			copies = ((MulticopyRouter)from.getRouter()).getCopies();
 			m.setCopies(copies);
 			from.setCcap(copies);
-			System.out.println(from+" creates "+m+" for "+to+" with "+copies+" copies");
+			System.out.println(from+" creates "+m+" for "+m.getTo()+" with "+copies+" copies");
 		}
 		from.createNewMessage(m);
 	}

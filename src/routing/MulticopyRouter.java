@@ -75,7 +75,7 @@ public class MulticopyRouter extends ActiveRouter {
 		Message newMessage = distribute(m, from);
 		con.setDone(true);
 		
-		if(newMessage.getTo().equals(getHost()))
+		if(newMessage.getTo().contains(getHost()))
 			System.out.println("Message "+ newMessage + " delivered by "+from.toString());
 		return super.receiveMessage(newMessage, from);
 	}

@@ -64,10 +64,12 @@ public class DistanceDelayReport extends Report implements MessageListener {
 			return;
 		}
 		
-		this.creationInfos.put( m.getId(), 
-				new InfoTuple(getSimTime(), 
-						m.getFrom().getLocation().clone(),
-						m.getTo().getLocation().clone()) );
+		for (DTNHost h : m.getTo()) {
+			this.creationInfos.put( m.getId(), 
+					new InfoTuple(getSimTime(), 
+							m.getFrom().getLocation().clone(),
+							h.getLocation().clone()) );
+		}
 	}
 
 	/**

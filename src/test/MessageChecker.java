@@ -5,6 +5,7 @@
 package test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import core.DTNHost;
 import core.Message;
@@ -44,7 +45,8 @@ public class MessageChecker implements MessageListener {
 	}
 	
 	public void messageDeleted(Message m, DTNHost where, boolean dropped) {
-		this.add(m, where, null, TYPE_DELETE, dropped, null);
+		DTNHost wild = null;
+		this.add(m, where, wild, TYPE_DELETE, dropped, null);
 	}
 
 	public void messageTransferAborted(Message m, DTNHost from, DTNHost to) {
@@ -83,6 +85,11 @@ public class MessageChecker implements MessageListener {
 	}
 	
 	private void add(Message m, DTNHost from, DTNHost to, String type, Boolean
+			dropped, Boolean delivered) {
+		this.queue.add(new MsgCheckerEvent(m,from,to,type,dropped,delivered));
+	}
+	
+	private void add(Message m, DTNHost from, List<DTNHost> to, String type, Boolean
 			dropped, Boolean delivered) {
 		this.queue.add(new MsgCheckerEvent(m,from,to,type,dropped,delivered));
 	}
@@ -137,6 +144,7 @@ public class MessageChecker implements MessageListener {
 		private Message msg;
 		private DTNHost from;
 		private DTNHost to;
+		private List<DTNHost> mto;
 		private Boolean dropped;
 		private Boolean delivered;
 		private String type;
@@ -146,6 +154,16 @@ public class MessageChecker implements MessageListener {
 			this.msg = m;
 			this.from = from;
 			this.to = to;
+			this.type = type;
+			this.dropped = dropped;
+			this.delivered = delivered;
+		}
+		
+		public MsgCheckerEvent(Message m, DTNHost from, List<DTNHost> mto,
+				String type, Boolean dropped, Boolean delivered) {
+			this.msg = m;
+			this.from = from;
+			this.mto = mto;
 			this.type = type;
 			this.dropped = dropped;
 			this.delivered = delivered;

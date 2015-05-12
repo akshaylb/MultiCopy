@@ -101,7 +101,8 @@ public class MessageStatsReport extends Report implements MessageListener {
 		if (finalTarget) {
 			this.latencies.add(getSimTime() - 
 				this.creationTimes.get(m.getId()) );
-			this.nrofDelivered++;
+			if(m.getTo().isEmpty())
+				this.nrofDelivered++;
 			this.hopCounts.add(m.getHops().size() - 1);
 			
 			if (m.isResponse()) {
@@ -119,7 +120,7 @@ public class MessageStatsReport extends Report implements MessageListener {
 		}
 		
 		this.creationTimes.put(m.getId(), getSimTime());
-		this.nrofCreated++;
+		this.nrofCreated ++;
 		if (m.getResponseSize() > 0) {
 			this.nrofResponseReqCreated++;
 		}

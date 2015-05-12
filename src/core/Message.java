@@ -41,6 +41,7 @@ public class Message implements Comparable<Message> {
 	 * Author: Akshay Kayastha, Khushveer Kaur, Dilip Yadav	
 	*/
 	private int copies;
+	private List<DTNHost> mto;
 	
 	/** if a response to this message is required, this is the size of the 
 	 * response message (or 0 if no response is requested) */
@@ -72,6 +73,8 @@ public class Message implements Comparable<Message> {
 	public Message(DTNHost from, DTNHost to, String id, int size) {
 		this.from = from;
 		this.to = to;
+		this.mto = new ArrayList<DTNHost>();
+		mto.add(to);
 		this.id = id;
 		this.size = size;
 		this.path = new ArrayList<DTNHost>();
@@ -90,6 +93,27 @@ public class Message implements Comparable<Message> {
 		addNodeOnPath(from);
 	}
 	
+//	Constructor for multicasting
+	public Message(DTNHost from, List<DTNHost> mto, String id, int size) {
+		this.from = from;
+		this.mto = mto;
+		this.id = id;
+		this.size = size;
+		this.path = new ArrayList<DTNHost>();
+		this.uniqueId = nextUniqueId;
+		
+		this.timeCreated = SimClock.getTime();
+		this.timeReceived = this.timeCreated;
+		this.initTtl = INFINITE_TTL;
+		this.responseSize = 0;
+		this.requestMsg = null;
+		this.properties = null;
+		this.appID = null;
+		
+		this.copies = INFINITE_TTL;
+		Message.nextUniqueId++;
+		addNodeOnPath(from);
+	}
 	/**
 	 * Returns the node this message is originally from
 	 * @return the node this message is originally from
@@ -102,8 +126,8 @@ public class Message implements Comparable<Message> {
 	 * Returns the node this message is originally to
 	 * @return the node this message is originally to
 	 */
-	public DTNHost getTo() {
-		return this.to;
+	public List<DTNHost> getTo() {
+			return this.mto;
 	}
 
 	/**
@@ -271,7 +295,7 @@ public class Message implements Comparable<Message> {
 		this.initTtl = m.initTtl;
 		this.appID = m.appID;
 		this.copies = m.copies;
-		
+		this.mto = m.mto;
 		if (m.properties != null) {
 			Set<String> keys = m.properties.keySet();
 			for (String key : keys) {
