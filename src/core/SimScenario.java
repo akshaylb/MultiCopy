@@ -355,7 +355,7 @@ public class SimScenario implements Serializable {
 		Double transmitRange = ccs.getDouble(NetworkInterface.TRANSMIT_RANGE_S);
 		int transmitSpeed = ccs.getInt(NetworkInterface.TRANSMIT_SPEED_S);
 		int nrOfCc = ccs.getInt(NR_OF_CC_SETTING);
-		System.out.println(nrOfCc);
+//		System.out.println(nrOfCc);
 					
 		for (int i=1; i<=nrofGroups; i++) {
 			List<NetworkInterface> mmNetInterfaces = 

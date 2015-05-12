@@ -4,6 +4,8 @@
  */
 package input;
 
+import java.util.List;
+
 /**
  * A message related external event
  */
@@ -12,6 +14,8 @@ public abstract class MessageEvent extends ExternalEvent {
 	protected int fromAddr;
 	/** address of the node the message is to */
 	protected int toAddr;
+	/** address of the node the message is to */
+	protected List<Integer> mtoAddr=null;
 	/** identifier of the message */
 	protected String id;
 	
@@ -26,6 +30,13 @@ public abstract class MessageEvent extends ExternalEvent {
 		super(time);
 		this.fromAddr = from;
 		this.toAddr= to;
+		this.id = id;
+	}
+	
+	public MessageEvent(int from, List<Integer> mto, String id, double time) {
+		super(time);
+		this.fromAddr = from;
+		this.mtoAddr = mto;
 		this.id = id;
 	}
 	

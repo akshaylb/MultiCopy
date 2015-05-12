@@ -279,6 +279,26 @@ public class World {
 
 		return node; 
 	}
+	
+	/**
+	 * Returns a node from the world by its address
+	 * @param address The address of the node
+	 * @return The requested node or null if it wasn't found
+	 */
+	public List<DTNHost> getNodeByAddress(List<Integer> addresses) {
+		List<DTNHost> nodes = new ArrayList<DTNHost>();
+		for (int address : addresses) {
+			if (address < 0 || address >= hosts.size()) {
+				throw new SimError("No host for address " + address + ". Address " +
+						"range of 0-" + (hosts.size()-1) + " is valid");
+			}
+			DTNHost node = this.hosts.get(address);
+			assert node.getAddress() == address : "Node indexing failed. " + 
+				"Node " + node + " in index " + address;
+			nodes.add(node);
+		}
+		return nodes; 
+	}
 
 	/**
 	 * Schedules an update request to all nodes to happen at the specified 

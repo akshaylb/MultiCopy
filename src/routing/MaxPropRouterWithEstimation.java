@@ -446,7 +446,7 @@ public class MaxPropRouterWithEstimation extends ActiveRouter {
 			 * (optimization) */
 			Set<Integer> toSet = new HashSet<Integer>();
 			for (Message m : getMessageCollection()) {
-				toSet.add(m.getTo().getAddress());
+				//toSet.add(m.getTo().getAddress());
 			}
 						
 			this.costsForMessages = dijkstra.getCosts(fromIndex, toSet);

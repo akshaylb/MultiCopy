@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+import core.DTNHost;
 import core.SimError;
 
 /**
@@ -40,8 +41,10 @@ import core.SimError;
  * </P>
  */
 public class StandardEventsReader implements ExternalEventsReader {
-	/** Identifier of message creation event ({@value}) */
+	/** Identifier of unicast message creation event ({@value}) */
 	public static final String CREATE = "C";
+	/** Identifier of multicast message creation event ({@value}) */
+	public static final String CREATE_M = "CM";
 	/** Identifier of message transfer start event ({@value}) */
 	public static final String SEND = "S";
 	/** Identifier of message delivered event ({@value}) */
@@ -149,6 +152,18 @@ public class StandardEventsReader implements ExternalEventsReader {
 							respSize = lineScan.nextInt();
 						}
 						events.add(new MessageCreateEvent(hostAddr, host2Addr,
+								msgId, size, respSize, time));
+					}
+					else if(action.equals(CREATE_M)){
+						List<Integer> mto = new ArrayList<Integer>();
+						mto.add(host2Addr);
+						while (lineScan.hasNextInt()) {
+							mto.add(lineScan.nextInt());
+						}
+						int respSize = 0;
+						int size = mto.remove(mto.size()-1);
+						//System.out.println(mto);
+						events.add(new MessageCreateEvent(hostAddr, mto,
 								msgId, size, respSize, time));
 					}
 					else {
