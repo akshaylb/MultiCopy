@@ -72,6 +72,7 @@ public class SimScenario implements Serializable {
 	
 	/** namespace for group community center settings ({@value})*/
 	public static final String CC_NS = "Community";
+	public static final String NR_OF_CC_SETTING = "nrOfCC";
 	
 	/** number of hosts in the group -setting id ({@value})*/
 	public static final String NROF_HOSTS_S = "nrofHosts";
@@ -353,6 +354,8 @@ public class SimScenario implements Serializable {
 		String cIntname = ccs.getSetting(INTERFACENAME_S);
 		Double transmitRange = ccs.getDouble(NetworkInterface.TRANSMIT_RANGE_S);
 		int transmitSpeed = ccs.getInt(NetworkInterface.TRANSMIT_SPEED_S);
+		int nrOfCc = ccs.getInt(NR_OF_CC_SETTING);
+		System.out.println(nrOfCc);
 					
 		for (int i=1; i<=nrofGroups; i++) {
 			List<NetworkInterface> mmNetInterfaces = 
@@ -448,7 +451,9 @@ public class SimScenario implements Serializable {
 				ccNetInterfaces = new ArrayList<NetworkInterface>();
 				if(((WorkingDayMovement)mmProto).getAllOfficeLocations() != null) 
 				{
-					allCC = pickNRandom(((WorkingDayMovement)mmProto).getAllOfficeLocations(),10);
+					if(nrOfCc > ((WorkingDayMovement)mmProto).getAllOfficeLocations().size())
+						nrOfCc = ((WorkingDayMovement)mmProto).getAllOfficeLocations().size();
+					allCC = pickNRandom(((WorkingDayMovement)mmProto).getAllOfficeLocations(),nrOfCc);
 					if (!allCC.contains(((WorkingDayMovement)mmProto).getOfficeLocation())) 
 					{
 						allCC.add(((WorkingDayMovement)mmProto).getOfficeLocation());
